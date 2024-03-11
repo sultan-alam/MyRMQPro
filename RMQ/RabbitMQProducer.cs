@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
 
@@ -11,7 +12,7 @@ Creation:	02-Mar-2024
 ================================================================
 Modification History    
 Author		Date		Description of change    
-
+Sultan      11-Mar-24   Ctor receiving the configuration
 ================================================================    
 Missing:    
 
@@ -35,21 +36,18 @@ namespace MyRMQPro
         private bool disposedValue;
 
         /// <summary>
-        /// Ctor receives the connection parameter
+        /// Ctor receives the Configuration
         /// </summary>
-        /// <param name="hostName"></param>
-        /// <param name="port"></param>
-        /// <param name="userName"></param>
-        /// <param name="password"></param>
-        public RabbitMQProducer(string hostName, string port, string userName, string password, string exchange, string type, string queue)
-        {
-            HostName = hostName;
-            Port = Convert.ToInt32(port);
-            UserName = userName;
-            Password = password;
-            Exchange = exchange;
-            Type = type;
-            Queue = queue;
+        /// <param name="config"></param>        
+        public RabbitMQProducer(IConfiguration config)
+        {            
+            HostName = config["RMQ:HostName"];
+            Port = config.GetValue<int>("RMQ:Port");
+            UserName = config["RMQ:UserName"];
+            Password = config["RMQ:Password"];
+            Exchange = config["RMQ:Exchange"];
+            Type = config["RMQ:Type"];
+            Queue = config["RMQ:Queue"];
         }
         /// <summary>
         /// Sending message to the Queue (FIFO)
